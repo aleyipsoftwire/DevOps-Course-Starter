@@ -11,7 +11,7 @@ TRELLO_TODO_LIST_ID = os.environ.get('TRELLO_TODO_LIST_ID')
 TRELLO_DONE_LIST_ID = os.environ.get('TRELLO_DONE_LIST_ID')
 
 
-def get_board():
+def get_trello_board():
     url = "{url}/boards/{id}/lists".format(
         url=TRELLO_API_HOST, id=TRELLO_BOARD_ID
     )
@@ -50,7 +50,7 @@ def get_board():
     return cards
 
 
-def add_item(title):
+def add_trello_item(title):
     url = "{url}/cards".format(url=TRELLO_API_HOST)
 
     headers = {"Accept": "application/json"}
@@ -62,8 +62,33 @@ def add_item(title):
         'name': title
     }
 
-    response = requests.request(
+    requests.request(
         "POST",
+        url,
+        headers=headers,
+        params=query
+    )
+
+
+def update_trello_item_status(item_id, status):
+    url = "{url}/cards/{id}".format(url=TRELLO_API_HOST, id=item_id)
+
+    headers = {"Accept": "application/json"}
+
+    match status:
+        case 'done':
+            id_list = TRELLO_DONE_LIST_ID
+        case _:
+            id_list = TRELLO_TODO_LIST_ID
+
+    query = {
+        'idList': id_list,
+        'key': TRELLO_API_KEY,
+        'token': TRELLO_API_TOKEN,
+    }
+
+    requests.request(
+        "PUT",
         url,
         headers=headers,
         params=query
