@@ -11,6 +11,22 @@ TRELLO_TODO_LIST_ID = os.environ.get('TRELLO_TODO_LIST_ID')
 TRELLO_DONE_LIST_ID = os.environ.get('TRELLO_DONE_LIST_ID')
 
 
+class Item:
+    def __init__(self, id, title, status='To Do'):
+        self.id = id
+        self.title = title
+        self.status = status
+
+    @classmethod
+    def from_trello_card(cls, card, list_id):
+        if list_id == TRELLO_DONE_LIST_ID:
+            status = 'Done'
+        else:
+            status = 'To do'
+
+        return cls(card['id'], card['name'], status)
+
+
 def get_trello_board():
     url = "{url}/boards/{id}/lists".format(
         url=TRELLO_API_HOST, id=TRELLO_BOARD_ID
@@ -36,16 +52,8 @@ def get_trello_board():
     cards = []
     for trello_list in response.json():
         for card in trello_list['cards']:
-            if trello_list['id'] == TRELLO_DONE_LIST_ID:
-                status = 'Done'
-            else:
-                status = 'To do'
-
-            cards.append({
-                'id': card['id'],
-                'title': card['name'],
-                'status': status
-            })
+            card = Item.from_trello_card(card, trello_list['id'])
+            cards.append(card)
 
     return cards
 
