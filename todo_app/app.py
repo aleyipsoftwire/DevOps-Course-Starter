@@ -1,10 +1,8 @@
 from flask import Flask, redirect, render_template, request
 
 from todo_app.data.trello_items import add_trello_item, get_trello_board, update_trello_item_status
-from todo_app.flask_config import Config
 
 app = Flask(__name__)
-app.config.from_object(Config())
 
 
 @app.route('/')
