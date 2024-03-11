@@ -8,43 +8,64 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
-            <h2>Items</h2>
+        <h2>To Do Items</h2>
 
-            <table class="table table-striped">
-                <thead>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Update status</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for item in view_model.todo_items %}
                 <tr>
-                    <th scope="col">Title</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Update status</th>
+                    <td>{{ item.title }}</td>
+                    <td>
+                        <form method="post" action="/update_status">
+                            <input type="hidden" name="item_id" value="{{ item.id }}"/>
+
+                            <button type="submit" name="status" value="done" class="btn btn-secondary">
+                                Mark as done
+                            </button>
+                        </form>
+                    </td>
                 </tr>
-                </thead>
+            {% endfor %}
+            </tbody>
+        </table>
 
-                <tbody>
-                {% for item in items %}
-                    <tr>
-                        <td>{{ item.title }}</td>
-                        <td>{{ item.status }}</td>
-                        <td>
-                            <form method="post" action="/update_status">
-                                <input type="hidden" name="item_id" value="{{ item.id }}"/>
+    </div>
 
-                                {% if item.status == 'Done' %}
-                                    <button type="submit" name="status" value="to_do" class="btn btn-secondary">
-                                        Mark as to do
-                                    </button>
-                                {% else %}
-                                    <button type="submit" name="status" value="done" class="btn btn-secondary">
-                                        Mark as done
-                                    </button>
-                                {% endif %}
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <div class="row">
+        <h2>Done Items</h2>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Update status</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for item in view_model.done_items %}
+                <tr>
+                    <td>{{ item.title }}</td>
+                    <td>
+                        <form method="post" action="/update_status">
+                            <input type="hidden" name="item_id" value="{{ item.id }}"/>
+
+                            <button type="submit" name="status" value="to_do" class="btn btn-secondary">
+                                Mark as to do
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
     <div class="row">
