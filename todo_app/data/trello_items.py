@@ -75,11 +75,10 @@ def update_trello_item_status(item_id, status):
 
     headers = {"Accept": "application/json"}
 
-    match status:
-        case 'done':
-            id_list = os.getenv('TRELLO_DONE_LIST_ID')
-        case _:
-            id_list = os.getenv('TRELLO_TODO_LIST_ID')
+    if status == 'done':
+        id_list = os.getenv('TRELLO_DONE_LIST_ID')
+    else:
+        id_list = os.getenv('TRELLO_TODO_LIST_ID')
 
     query = {
         'idList': id_list,
