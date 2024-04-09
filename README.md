@@ -71,3 +71,29 @@ The project uses pytest to run tests. To run the tests, run the following from y
 ```bash
 $ poetry run pytest
 ```
+
+## Provisioning a VM from an Ansible Control Node
+
+1. SSH into the control node
+2. Copy the `ansible` directory to the control node
+3. Replace the IP address in the `inventory` file with the IP address(es) of the managed VM(s)
+4. Create a file `ansible-pw.txt` containing the vault password
+5. Run the following command in the `ansible` directory, to provision the VM:
+    ```bash
+    $ ansible-playbook playbook.yml -i inventory --vault-password-file ansible-pw.txt
+    ```
+
+### Note on env variables
+
+The ansible configs contained in this repo contain the encrypted env values required to run the app.
+These values can be seen in the `ansible/vars/env.yml` file.
+
+The values are individually encrypted using ansible-vault and added to the file.
+
+To generate a new encrypted value or to replace one of the provided values, for example, the `trello_api_key` value:
+
+```bash
+$ ansible-vault encrypt_string --vault-password-file your_password_file --name 'trello_api_key'
+```
+
+then enter the value you want to encrypt when prompted.
