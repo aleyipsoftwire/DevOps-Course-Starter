@@ -97,3 +97,10 @@ $ ansible-vault encrypt_string --vault-password-file your_password_file --name '
 ```
 
 then enter the value you want to encrypt when prompted.
+
+## Docker
+
+```bash
+docker build --tag todo-app .
+docker run -p 8000:8000 --env-file .env todo-app
+```
