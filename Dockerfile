@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.9-slim as base
 
 # Set up poetry
 ENV POETRY_HOME="/opt/poetry"
@@ -14,7 +14,16 @@ WORKDIR /app
 COPY poetry.lock pyproject.toml /app/
 RUN poetry install --no-interaction --no-ansi
 
-# Run project
 COPY todo_app /app/todo_app
+
 EXPOSE 8000
+
+FROM base as production
+
+ENV FLASK_DEBUG=false
+CMD poetry run gunicorn --bind 0.0.0.0 "todo_app.app:create_app()"
+
+FROM base as development
+
+ENV FLASK_DEBUG=true
 CMD poetry run gunicorn --bind 0.0.0.0 "todo_app.app:create_app()"
