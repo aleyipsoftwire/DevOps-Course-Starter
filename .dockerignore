@@ -1,0 +1,13 @@
+.git
+.github
+.idea
+.pytest_cache
+.venv
+.vscode
+ansible
+**/__pycache__
+.env*
+.gitignore
+.gitpod.yml
+.python-version
+Dockerfile

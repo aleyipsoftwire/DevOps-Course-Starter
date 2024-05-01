@@ -47,11 +47,13 @@ Replace the board and list ids with the respective ids from your Trello board.
 ## Running the App
 
 Once the all dependencies have been installed, start the Flask app in development mode within the Poetry environment by running:
+
 ```bash
 $ poetry run flask run
 ```
 
 You should see output similar to the following:
+
 ```bash
  * Serving Flask app 'todo_app/app'
  * Debug mode: on
@@ -62,6 +64,7 @@ Press CTRL+C to quit
  * Debugger is active!
  * Debugger PIN: 113-666-066
 ```
+
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
 
 ## Running the Tests
@@ -79,9 +82,9 @@ $ poetry run pytest
 3. Replace the IP address in the `inventory` file with the IP address(es) of the managed VM(s)
 4. Create a file `ansible-pw.txt` containing the vault password
 5. Run the following command in the `ansible` directory, to provision the VM:
-    ```bash
-    $ ansible-playbook playbook.yml -i inventory --vault-password-file ansible-pw.txt
-    ```
+   ```bash
+   $ ansible-playbook playbook.yml -i inventory --vault-password-file ansible-pw.txt
+   ```
 
 ### Note on env variables
 
@@ -97,3 +100,26 @@ $ ansible-vault encrypt_string --vault-password-file your_password_file --name '
 ```
 
 then enter the value you want to encrypt when prompted.
+
+## Docker
+
+Run the project with mounting:
+```bash
+docker build --target development --tag todo-app:dev .
+docker run -dit \
+    --name todo-app-dev \
+    -p 8000:8000 \
+    --env-file .env \
+    --mount type=bind,source="$(pwd)/todo_app",target=/app/todo_app,readonly \
+    todo-app:dev
+```
+
+Run the project in production environment:
+```bash
+docker build --target production --tag todo-app:prod .
+docker run -dit \
+    --name todo-app-prod \
+    -p 8000:8000 \
+    --env-file .env \
+    todo-app:prod
+```
