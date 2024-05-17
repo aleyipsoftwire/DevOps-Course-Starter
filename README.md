@@ -114,6 +114,14 @@ docker run -dit \
     todo-app:dev
 ```
 
+Run tests:
+```bash
+docker build --target test --tag todo-app:test .
+docker run -it \
+    --env-file .env.test \
+    todo-app:test
+```
+
 Run the project in production environment:
 ```bash
 docker build --target production --tag todo-app:prod .
