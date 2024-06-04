@@ -18,6 +18,10 @@ COPY todo_app /app/todo_app
 
 EXPOSE 8000
 
+FROM base as test
+
+ENTRYPOINT poetry run pytest
+
 FROM base as production
 
 ENV FLASK_DEBUG=false
