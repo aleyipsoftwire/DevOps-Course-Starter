@@ -1,4 +1,4 @@
-FROM python:3.9-slim as base
+FROM python:3.9-slim AS base
 
 # Set up poetry
 ENV POETRY_HOME="/opt/poetry"
@@ -12,22 +12,22 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 # Install dependencies
 WORKDIR /app
 COPY poetry.lock pyproject.toml /app/
-RUN poetry install --no-interaction --no-ansi
+RUN poetry config virtualenvs.create false --local && poetry install --no-interaction --no-ansi
 
 COPY todo_app /app/todo_app
 
 EXPOSE 8000
 
-FROM base as test
+FROM base AS test
 
-ENTRYPOINT poetry run pytest
+ENTRYPOINT ["poetry", "run", "pytest"]
 
-FROM base as production
+FROM base AS production
 
 ENV FLASK_DEBUG=false
-CMD poetry run gunicorn --bind 0.0.0.0 "todo_app.app:create_app()"
+CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0", "todo_app.app:create_app()"]
 
-FROM base as development
+FROM base AS development
 
 ENV FLASK_DEBUG=true
-CMD poetry run gunicorn --bind 0.0.0.0 "todo_app.app:create_app()"
+CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0", "todo_app.app:create_app()"]

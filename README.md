@@ -1,10 +1,15 @@
 # DevOps Apprenticeship: Project Exercise
 
-> If you are using GitPod for the project exercise (i.e. you cannot use your local machine) then you'll want to launch a VM using the [following link](https://gitpod.io/#https://github.com/CorndelWithSoftwire/DevOps-Course-Starter). Note this VM comes pre-setup with Python & Poetry pre-installed.
+> If you are using GitPod for the project exercise (i.e. you cannot use your local machine) then you'll want to launch a
+> VM using the [following link](https://gitpod.io/#https://github.com/CorndelWithSoftwire/DevOps-Course-Starter).
+> Note this VM comes pre-setup with Python & Poetry pre-installed.
 
 ## System Requirements
 
-The project uses poetry for Python to create an isolated environment and manage package dependencies. To prepare your system, ensure you have an official distribution of Python version 3.8+ and install Poetry using one of the following commands (as instructed by the [poetry documentation](https://python-poetry.org/docs/#system-requirements)):
+The project uses poetry for Python to create an isolated environment and manage package dependencies.
+To prepare your system, ensure you have an official distribution of Python version 3.8+
+and install Poetry using one of the following commands
+(as instructed by the [poetry documentation](https://python-poetry.org/docs/#system-requirements)):
 
 ### Poetry installation (Bash)
 
@@ -20,23 +25,27 @@ curl -sSL https://install.python-poetry.org | python3 -
 
 You can check poetry is installed by running `poetry --version` from a terminal.
 
-**Please note that after installing poetry you may need to restart VSCode and any terminals you are running before poetry will be recognised.**
+**Please note that after installing poetry you may need to restart VSCode and any terminals you are running before
+poetry will be recognised.**
 
 ## Dependencies
 
-The project uses a virtual environment to isolate package dependencies. To create the virtual environment and install required packages, run the following from your preferred shell:
+The project uses a virtual environment to isolate package dependencies.
+To create the virtual environment and install required packages, run the following from your preferred shell:
 
 ```bash
 $ poetry install
 ```
 
-You'll also need to clone a new `.env` file from the `.env.template` to store local configuration options. This is a one-time operation on first setup:
+You'll also need to clone a new `.env` file from the `.env.template` to store local configuration options.
+This is a one-time operation on first setup:
 
 ```bash
 $ cp .env.template .env  # (first time only)
 ```
 
-The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like development mode (which also enables features like hot reloading when you make a file change).
+The `.env` file is used by flask to set environment variables when running `flask run`.
+This enables things like development mode (which also enables features like hot reloading when you make a file change).
 
 ### Trello
 
@@ -46,7 +55,8 @@ Replace the board and list ids with the respective ids from your Trello board.
 
 ## Running the App
 
-Once the all dependencies have been installed, start the Flask app in development mode within the Poetry environment by running:
+Once all the dependencies have been installed, start the Flask app in development mode within the Poetry environment by
+running:
 
 ```bash
 $ poetry run flask run
@@ -104,6 +114,7 @@ then enter the value you want to encrypt when prompted.
 ## Docker
 
 Run the project with mounting:
+
 ```bash
 docker build --target development --tag todo-app:dev .
 docker run -dit \
@@ -115,6 +126,7 @@ docker run -dit \
 ```
 
 Run tests:
+
 ```bash
 docker build --target test --tag todo-app:test .
 docker run -it \
@@ -123,6 +135,7 @@ docker run -it \
 ```
 
 Run the project in production environment:
+
 ```bash
 docker build --target production --tag todo-app:prod .
 docker run -dit \
@@ -131,3 +144,26 @@ docker run -dit \
     --env-file .env \
     todo-app:prod
 ```
+
+## Deployment
+
+### Building the Docker image
+
+1. Logging into DockerHub locally, with `docker login`
+2. Building the image, with `docker build --target production --tag <user_name>/todo-app:prod .`
+3. Pushing the image, with `docker push <user_name>/todo_app:prod`
+
+### Deploying to Azure App Services
+
+1. First create an App Service Plan:
+   `az appservice plan create --resource-group <resource_group_name> -n <appservice_plan_name> --sku B1 --is-linux`
+2. Then create the Web App:
+   `az webapp create --resource-group <resource_group_name> --plan <appservice_plan_name> --name <webapp_name> --deployment-container-image-name docker.io/<user_name>/todo-app:prod`
+3. Set up environment variables individually via
+   `az webapp config appsettings set -g <resource_group_name> -n <webapp_name> --settings FLASK_APP=todo_app/app`
+4. The app should now be deployed to `http://<webapp_name>.azurewebsites.net/`
+
+### Update the image
+
+When the image is updated and pushed to DockerHub, run `curl -x POST '<webhook>'`.
+The webhook URL can be found under Deployment Center on the app service's page in the Azure portal
