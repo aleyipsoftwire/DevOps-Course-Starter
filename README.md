@@ -47,11 +47,10 @@ $ cp .env.template .env  # (first time only)
 The `.env` file is used by flask to set environment variables when running `flask run`.
 This enables things like development mode (which also enables features like hot reloading when you make a file change).
 
-### Trello
+### MongoDB
 
-The `.env` file also includes environment variables required to integrate with Trello.
-These variables have deliberately been left blank in the `.env.template` file.
-Replace the board and list ids with the respective ids from your Trello board.
+The `.env` file also includes environment variables required to connect to a mongodb instance.
+This variable has deliberately been left blank in the `.env.template` file.
 
 ## Running the App
 
@@ -103,10 +102,10 @@ These values can be seen in the `ansible/vars/env.yml` file.
 
 The values are individually encrypted using ansible-vault and added to the file.
 
-To generate a new encrypted value or to replace one of the provided values, for example, the `trello_api_key` value:
+To generate a new encrypted value or to replace one of the provided values:
 
 ```bash
-$ ansible-vault encrypt_string --vault-password-file your_password_file --name 'trello_api_key'
+$ ansible-vault encrypt_string --vault-password-file your_password_file --name '<key_name>'
 ```
 
 then enter the value you want to encrypt when prompted.
