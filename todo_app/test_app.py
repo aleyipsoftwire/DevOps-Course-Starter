@@ -1,10 +1,10 @@
-import os
-
+import mongomock
+import pymongo
 import pytest
-import requests
 from dotenv import load_dotenv, find_dotenv
 
 from todo_app import app
+from todo_app.data.mongo_items import ItemStatus
 
 
 @pytest.fixture
@@ -13,43 +13,28 @@ def client():
     file_path = find_dotenv('.env.test')
     load_dotenv(file_path, override=True)
 
-    # Create the new app.
-    test_app = app.create_app()
-
-    # Use the app to create a test_client that can be used in our tests.
-    with test_app.test_client() as client:
-        yield client
+    with mongomock.patch(servers=(('fakemongo.com', 27017),)):
+        test_app = app.create_app()
+        with test_app.test_client() as client:
+            yield client
 
 
-class StubResponse():
-    def __init__(self, status_code, fake_response_data):
-        self.status_code = status_code
-        self.fake_response_data = fake_response_data
+def test_index_page(client):
+    # Given
+    given_db_has_one_document()
 
-    def json(self):
-        return self.fake_response_data
-
-
-# Stub replacement for requests.get(url)
-def stub(url, headers={}, params={}):
-    test_board_id = os.getenv('TRELLO_BOARD_ID')
-    if url == f'https://api.trello.com/1/boards/{test_board_id}/lists':
-        fake_response_data = [{
-            'id': '123abc',
-            'name': 'To Do',
-            'cards': [{'id': '456', 'name': 'Test card'}]
-        }]
-        return StubResponse(200, fake_response_data)
-
-    raise Exception(f'Integration test did not expect URL "{url}"')
-
-
-def test_index_page(monkeypatch, client):
-    # Replace requests.get(url) with our own function
-    monkeypatch.setattr(requests, 'get', stub)
-
-    # Make a request to our app's index page
+    # When
     response = client.get('/')
 
+    # Then
     assert response.status_code == 200
-    assert 'Test card' in response.data.decode()
+    assert 'This is a test title' in response.data.decode()
+
+
+def given_db_has_one_document():
+    client = pymongo.MongoClient('fakemongo.com')
+
+    client['todo-app-db']['cards'].insert_one({
+        "title": "This is a test title",
+        "status": ItemStatus.TO_DO.value
+    })

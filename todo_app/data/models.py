@@ -1,3 +1,6 @@
+from todo_app.data.mongo_items import ItemStatus
+
+
 class ViewModel:
     def __init__(self, items):
         self._items = items
@@ -8,8 +11,8 @@ class ViewModel:
 
     @property
     def done_items(self):
-        return [item for item in self._items if item.status == "Done"]
+        return [item for item in self._items if item.status == ItemStatus.DONE]
 
     @property
     def todo_items(self):
-        return [item for item in self._items if item.status == "To do"]
+        return [item for item in self._items if item.status == ItemStatus.TO_DO]
