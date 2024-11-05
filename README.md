@@ -166,3 +166,14 @@ docker run -dit \
 
 When the image is updated and pushed to DockerHub, run `curl -x POST '<webhook>'`.
 The webhook URL can be found under Deployment Center on the app service's page in the Azure portal
+
+## Security
+
+### Encryption in transit
+
+We are enforcing HTTPS with Azure App service.
+
+### Encryption at rest
+
+Azure Cosmos DB is encrypted at rest and in transport.
+See https://learn.microsoft.com/en-us/azure/cosmos-db/database-encryption-at-rest for more details.
