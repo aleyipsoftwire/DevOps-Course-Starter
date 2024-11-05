@@ -13,6 +13,7 @@ pytest = "^8.0.0"
 gunicorn = "^21.2.0"
 pymongo = "^4.8.0"
 mongomock = "^4.2.0.post1"
+safety = "^3.2.9"
 
 [tool.poetry.dev-dependencies]
 
