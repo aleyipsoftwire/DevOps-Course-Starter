@@ -16,6 +16,9 @@ def create_app():
     @app.route('/add', methods=['POST'])
     def add():
         title = request.form.get('title')
+
+        app.logger.info(f'Adding new item: {title}')
+
         add_mongo_item(title)
         return redirect('/')
 
@@ -24,8 +27,15 @@ def create_app():
         item_id = request.form.get('item_id')
         status = request.form.get('status')
 
+        app.logger.info(f'Updating status of item {item_id} to {status}')
+
         update_mongo_item_status(item_id, ItemStatus(status))
 
         return redirect('/')
+
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        app.logger.warning(f'Exception: {e}')
+        return e
 
     return app
