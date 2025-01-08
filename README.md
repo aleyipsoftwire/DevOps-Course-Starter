@@ -152,15 +152,19 @@ docker run -dit \
 2. Building the image, with `docker build --target production --tag <user_name>/todo-app:prod .`
 3. Pushing the image, with `docker push <user_name>/todo_app:prod`
 
-### Deploying to Azure App Services
+### Terraform
 
-1. First create an App Service Plan:
-   `az appservice plan create --resource-group <resource_group_name> -n <appservice_plan_name> --sku B1 --is-linux`
-2. Then create the Web App:
-   `az webapp create --resource-group <resource_group_name> --plan <appservice_plan_name> --name <webapp_name> --deployment-container-image-name docker.io/<user_name>/todo-app:prod`
-3. Set up environment variables individually via
-   `az webapp config appsettings set -g <resource_group_name> -n <webapp_name> --settings FLASK_APP=todo_app/app`
-4. The app should now be deployed to `http://<webapp_name>.azurewebsites.net/`
+1. Follow
+   [this tutorial](https://docs.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage#configure-storage-account)
+   to set up a storage account
+2. Update the following values in `main.tf`:
+    * `resource_group_name` (there are multiple instances)
+    * `storage_account_name`
+    * `container_name`
+    * `subscription_id`
+    * `docker_image_name`
+3. Run `terraform init`
+4. Run `terraform apply`
 
 ### Update the image
 
