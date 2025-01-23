@@ -187,3 +187,20 @@ See https://learn.microsoft.com/en-us/azure/cosmos-db/database-encryption-at-res
 Minimum level of shown logs can be configured by the `LOG_LEVEL` env var.
 
 Populate the `LOGGLY_TOKEN` env var for logs to be sent to Loggly.
+
+## Running in k8s
+
+1. Install `kubectl` and `minikube`
+2. Build a prod image: `docker build --target production --tag todo-app:prod .`
+3. Load the image into minikube: `minikube image load todo-app:prod`
+4. Create the secret for env variables:
+   ```shell
+   kubectl create secret generic container-env \
+     --from-literal=FLASK_APP='todo_app/app' \
+     --from-literal=MONGODB_PRIMARY_CONNECTION_STRING='<DELIBERATELY MISSING>' \
+     --from-literal=LOGGLY_TOKEN='<DELIBERATELY MISSING>' \
+     --from-literal=LOG_LEVEL='DEBUG'
+   ```
+5. Apply the k8s YAML files: `kubectl apply -f deployment.yaml -f service.yaml`
+6. Expose the port: `kubectl port-forward service/module-14 7080:80`
+7. Open http://localhost:7080 to view the app
