@@ -181,3 +181,9 @@ We are enforcing HTTPS with Azure App service.
 
 Azure Cosmos DB is encrypted at rest and in transport.
 See https://learn.microsoft.com/en-us/azure/cosmos-db/database-encryption-at-rest for more details.
+
+## Logging
+
+Minimum level of shown logs can be configured by the `LOG_LEVEL` env var.
+
+Populate the `LOGGLY_TOKEN` env var for logs to be sent to Loggly.
