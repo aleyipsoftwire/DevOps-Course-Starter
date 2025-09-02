@@ -11,10 +11,12 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 
 # Install dependencies
 WORKDIR /app
+
 COPY poetry.lock pyproject.toml /app/
-RUN poetry config virtualenvs.create false --local && poetry install --no-interaction --no-ansi
 
 COPY todo_app /app/todo_app
+
+RUN poetry config virtualenvs.create false --local && poetry install --no-interaction --no-ansi
 
 EXPOSE 8000
 
